@@ -8,8 +8,6 @@ def main():
     board_mines = plant_mines(board_skeleton, size)
     board_answer = place_numbers(board_mines, size)
     board_reveal = make_reveal(size)
-    # used in conjunction to display results for user
-    print_board(board_answer, board_reveal, size)
     game(board_answer, board_reveal, size)
 
 
@@ -129,9 +127,38 @@ def print_board(board_answer, board_reveal, size):
         print()
 
 
+def won(board_answer, board_reveal, size):
+    """Track if game has been won or lost during play"""
+    for x in range(size):
+        for y in range(size):
+            if board_answer[x][y] != '*' or board_reveal[x][y] is not True:
+                return False
+            else:
+                print("You won!")
+                return True
+
+
 def game(board_answer, board_reveal, size):
     """Play and manage game of minesweeper"""
+    # used in conjunction to display results for user
+    print_board(board_answer, board_reveal, size)
     # TODO: build game loop
+    while not won(board_answer, board_reveal, size):
+        while True:
+            x = input("Give me a X coordinate: ")
+            y = input("Give me a Y coordinate: ")
+            try:
+                x = int(x)
+                y = int(y)
+                break
+            except ValueError:
+                print("Not a proper coordinate.")
+        board_reveal[x][y] = True
+        if board_answer[x][y] == '*':
+            print("Boom!")
+            return 0
+        else:
+            print_board(board_answer, board_reveal, size)
 
 
 if __name__ == "__main__":
