@@ -12,7 +12,7 @@ def game():
     while not won(board, reveal):
         y = int(input("Give me a X value:"))
         x = int(input("Give me a Y value:"))
-        while not (x <= 9 and y <=9 and x >= 0 and y >= 0):
+        while not (9 >= x >= 0 and 9 >= y >= 0):
             print("Not a proper grid; try again!")
             y = int(input("Give me a X value:"))
             x = int(input("Give me a Y value:"))
@@ -67,13 +67,13 @@ def makeReveal():
 
 
 def placeNumbers(board):
-    """Tallys nearby mines and places number value for player"""
+    """Tallies nearby mines and places number value for player"""
     for x in range(10):
         for y in range(10):
             mineCount = 0
             if board[x][y] == "*":
                 board[x][y] = "*"
-            if board [x][y] == "." and x == 0 and y < 9:
+            if board[x][y] == "." and x == 0 and y < 9:
                 if board[x+1][y+1] == "*":
                    mineCount = mineCount + 1
                 if board[x][y+1] == "*" :
@@ -121,7 +121,7 @@ def placeNumbers(board):
                 if board[x+1][y] == "*":
                     mineCount = mineCount + 1
                 board[x][y] = mineCount
-            if board[x][y] == "." and x > 0 and x < 9 and y > 0 and y < 9:
+            if board[x][y] == "." and 0 < x < 9 and 0 < y < 9:
                 if board[x-1][y] == "*":
                     mineCount = mineCount + 1
                 if board[x-1][y-1] == "*":

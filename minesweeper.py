@@ -6,7 +6,11 @@ def main():
     """Manages functions for playing game of Minesweeper"""
     board_skeleton, size = make_board()
     board_mines = plant_mines(board_skeleton, size)
-    print(board_mines)
+    board_answer = place_numbers(board_mines, size)
+    board_reveal = make_reveal(size)
+    # used in conjunction to display results for user
+    print_board(board_answer, board_reveal, size)
+    game(board_answer, board_reveal, size)
 
 
 def make_board():
@@ -32,7 +36,7 @@ def plant_mines(board_skeleton, size):
     while True:
         user_input = input("Select Difficulty (1, 2, 3): ")
         try:
-            difficulty = float(user_input) * 0.1  # % to determine frequency
+            difficulty = float(user_input) * 0.1  # % of mines on board
             break
         except ValueError:
             print("Not a proper selection.")
@@ -44,6 +48,90 @@ def plant_mines(board_skeleton, size):
             else:
                 board_skeleton[x][y] = '.'
     return board_skeleton
+
+
+def place_numbers(board_mines, size):
+    """Tally nearby mines and place number value for player to discover"""
+    for x in range(size):
+        for y in range(size):
+            mine_count = 0
+            if board_mines[x][y] == ".":
+                if x == 0 and y < size - 1:
+                    if board_mines[x + 1][y + 1] == "*" or \
+                            board_mines[x][y + 1] == "*" or \
+                            board_mines[x][y - 1] == "*" or \
+                            board_mines[x + 1][y - 1] == "*" or \
+                            board_mines[x + 1][y] == "*":
+                        mine_count += 1
+                    board_mines[x][y] = mine_count
+                if x == size - 1 and y < size - 1:
+                    if board_mines[x - 1][y] == "*" or \
+                            board_mines[x - 1][y - 1] == "*" or \
+                            board_mines[x - 1][y + 1] == "*" or \
+                            board_mines[x][y + 1] == "*" or \
+                            board_mines[x][y - 1] == "*":
+                        mine_count += 1
+                    board_mines[x][y] = mine_count
+                if x < size - 1 and y == 0:
+                    if board_mines[x - 1][y] == "*" or \
+                            board_mines[x - 1][y + 1] == "*" or \
+                            board_mines[x + 1][y + 1] == "*" or \
+                            board_mines[x][y + 1] == "*" or \
+                            board_mines[x + 1][y] == "*":
+                        mine_count += 1
+                    board_mines[x][y] = mine_count
+                if x < size - 1 and y == size - 1:
+                    if board_mines[x - 1][y] == "*" or \
+                            board_mines[x - 1][y - 1] == "*" or \
+                            board_mines[x][y - 1] == "*" or \
+                            board_mines[x + 1][y - 1] == "*" or \
+                            board_mines[x + 1][y] == "*":
+                        mine_count += 1
+                    board_mines[x][y] = mine_count
+                if 0 < x < size - 1 and 0 < y < size - 1:
+                    if board_mines[x - 1][y] == "*" or \
+                            board_mines[x - 1][y - 1] == "*" or \
+                            board_mines[x - 1][y + 1] == "*" or \
+                            board_mines[x + 1][y + 1] == "*" or \
+                            board_mines[x][y + 1] == "*" or \
+                            board_mines[x][y - 1] == "*" or \
+                            board_mines[x + 1][y - 1] == "*" or \
+                            board_mines[x + 1][y] == "*":
+                        mine_count += 1
+                    board_mines[x][y] = mine_count
+                if x == size - 1 and y == size - 1:
+                    if board_mines[x - 1][y] == "*" or \
+                            board_mines[x - 1][y - 1] == "*" or \
+                            board_mines[x][y - 1] == "*":
+                        mine_count += 1
+                    board_mines[x][y] = mine_count
+    for x in range(size):
+        for y in range(size):
+            if board_mines[x][y] == 0:
+                board_mines[x][y] = '.'
+    return board_mines
+
+
+def make_reveal(size):
+    """Tracks if part of board is visible to user or not using boolean values"""
+    # Build 2d array of False bool flag
+    return [[False for x in range(size)] for y in range(size)]
+
+
+def print_board(board_answer, board_reveal, size):
+    """Track and display the board as the player will see it"""
+    for x in range(size):
+        for y in range(size):
+            if board_reveal[x][y] is False:
+                print("X", end='')
+            else:
+                print(board_answer[x][y], end='')
+        print()
+
+
+def game(board_answer, board_reveal, size):
+    """Play and manage game of minesweeper"""
+    # TODO: build game loop
 
 
 if __name__ == "__main__":
